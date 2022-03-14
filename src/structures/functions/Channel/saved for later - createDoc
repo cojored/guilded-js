@@ -1,0 +1,24 @@
+const Request = require("../../../Requests/Request.js");
+module.exports = function (client, channelId, title, content) {
+  if (!title || title === "") {
+    console.log("\x1b[31m[ERROR] Please specify a title");
+    return;
+  }
+  if (!content || content === "") {
+    console.log("\x1b[31m[ERROR] Please specify message content");
+    return;
+  }
+  return new Request({
+    endpoint: `channels/${channelId}/docs`,
+    body: { title: title, content: content },
+    api: client.api,
+    token: client.token,
+    successId: 201,
+    method: "POST",
+  }).then((data) => {
+    let Doc = require("../../Doc.js");
+    if (!data) return;
+    let doc = new Doc(data.doc, client);
+    return doc;
+  });
+};
